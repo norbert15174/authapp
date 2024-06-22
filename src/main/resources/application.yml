@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: master-thesis-app
+  cloud:
+    config:
+      discovery:
+        enabled: true
+  ssl:
+    bundle:
+      jks:
+        main:
+          keystore:
+            location: "c:/master-thesis/ssl/master-thesis-faron.pl-keystore.p12"
+            password: ${MASTER_THESIS_CERT_PASSWORD}
+            type: "PKCS12"
+          truststore:
+            location: "c:/master-thesis/ssl/master-thesis-faron.pl-truststore.p12"
+            password: changeit
+            type: "PKCS12"
+        server:
+          keystore:
+            location: "c:/master-thesis/ssl/master-thesis-faron.pl.p12"
+            password: ${MASTER_THESIS_CERT_PASSWORD}
+            type: "PKCS12"
+          truststore:
+            location: "c:/master-thesis/ssl/master-thesis-faron.pl-truststore.p12"
+            password: changeit
+            type: "PKCS12"
+
+server:
+  ssl:
+    enabled: true
+    enabled-protocols: [ TLSv1.2 ]
+    client-auth: want
+    bundle: server
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  key: ${MASTERTHESIS_JWT_KEY}
+  access-token-expiration-time: 900000
+  refresh-token-expiration-time: 3600000
+  cookie-max-age: 3600
+  issuer: master-thesis-faron
