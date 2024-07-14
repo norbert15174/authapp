@@ -27,18 +27,6 @@ class GlobalExceptionHandler {
                 .build();
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ErrorModel handleException(final Exception ex, HttpServletRequest request) {
-
-        return ErrorModel.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .title(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
-                .path(request.getRequestURI())
-                .detail("INTERNAL ERROR")
-                .build();
-    }
-
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     ErrorModel handleException(HttpServletRequest request) {

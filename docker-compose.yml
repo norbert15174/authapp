@@ -1,0 +1,99 @@
+version: '3.8'
+
+networks:
+  master-thesis-network:
+    driver: bridge
+    external: true
+
+services:
+  authapp-service:
+    container_name: authapp-service
+    image: authapp:latest
+    volumes:
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl-keystore.p12:/master-thesis-faron.pl-keystore.p12'
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl-truststore.p12:/master-thesis-faron.pl-truststore.p12'
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl.p12:/master-thesis-faron.pl.p12'
+    environment:
+      NEXT-INSTANCE-URL: https://master-thesis-faron.pl:8080
+      HAS-NEXT-INSTANCE: true
+      INSTANCE: 1
+    ports:
+      - 8080:8080
+    extra_hosts:
+      - "master-thesis-faron.pl:172.29.0.11"
+    networks:
+      master-thesis-network:
+        ipv4_address: 172.29.0.10
+    depends_on:
+      - discovery-service
+      - config-server
+  authapp-service2:
+    container_name: authapp-service2
+    image: authapp:latest
+    environment:
+      NEXT-INSTANCE-URL: https://master-thesis-faron.pl:8080
+      HAS-NEXT-INSTANCE: true
+      INSTANCE: 2
+    volumes:
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl-keystore.p12:/master-thesis-faron.pl-keystore.p12'
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl-truststore.p12:/master-thesis-faron.pl-truststore.p12'
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl.p12:/master-thesis-faron.pl.p12'
+    ports:
+      - 8081:8080
+    extra_hosts:
+      - "master-thesis-faron.pl:172.29.0.12"
+    networks:
+      master-thesis-network:
+        ipv4_address: 172.29.0.11
+    depends_on:
+      - discovery-service
+      - config-server
+  authapp-service3:
+    container_name: authapp-service3
+    image: authapp:latest
+    environment:
+      NEXT-INSTANCE-URL: https://master-thesis-faron.pl:8080
+      HAS-NEXT-INSTANCE: false
+      INSTANCE: 3
+    volumes:
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl-keystore.p12:/master-thesis-faron.pl-keystore.p12'
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl-truststore.p12:/master-thesis-faron.pl-truststore.p12'
+      - '/mnt/c/master-thesis/ssl/master-thesis-faron.pl.p12:/master-thesis-faron.pl.p12'
+    ports:
+      - 8082:8080
+    extra_hosts:
+      - "master-thesis-faron.pl:172.29.0.12"
+    networks:
+      master-thesis-network:
+        ipv4_address: 172.29.0.12
+    depends_on:
+      - discovery-service
+      - config-server
+  zipkin-server:
+    container_name: zipkin-server
+    image: openzipkin/zipkin:latest
+    ports:
+      - 9411:9411
+    networks:
+      - master-thesis-network
+  discovery-service:
+    container_name: discovery-service
+    image: discovery-service
+    ports:
+      - 8761:8761
+    networks:
+      - master-thesis-network
+  config-server:
+    container_name: config-server
+    image: config-server
+    ports:
+      - 8888:8888
+    networks:
+      - master-thesis-network
+    environment:
+      GIT_ACCESS_KEY: ${GIT_ACCESS_KEY}
+      GIT_LOGIN: ${GIT_LOGIN}
+      VAULT_TOKEN_KEY: ${VAULT_TOKEN_KEY}
+      HAS-NEXT-INSTANCE: true
+    depends_on:
+      - discovery-service

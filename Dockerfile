@@ -5,6 +5,10 @@ COPY . .
 RUN mvn clean package -Dmaven.compiler.source=17 -Dmaven.compiler.target=17 -DskipTests
 
 FROM openjdk:17-ea-slim
+RUN apt-get update && \
+    apt-get install -y curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 RUN useradd -r appuser && mkdir -p /app
 COPY --from=builder /build/target/authapp-0.0.1-SNAPSHOT.jar  /app/app.jar
 RUN chmod -R 755 /app && \
