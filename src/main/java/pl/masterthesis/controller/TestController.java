@@ -40,24 +40,24 @@ public class TestController {
         return restClientService.noAuthTest();
     }
 
-    @GetMapping("/cert/auth/performance")
-    public String certTestPerformance() {
-        return "Hello World";
-    }
-
     @GetMapping("/basic/auth/performance")
-    public String basicTestPerformance() {
-        return "Hello World";
+    public ResponseEntity<String> basicTestPerformance() {
+        return restClientService.basicTestPerformance();
     }
 
     @GetMapping("/token/auth/performance")
-    public String tokenTestPerformance() {
-        return "Hello World";
+    public ResponseEntity<String> tokenTestPerformance() {
+        return restClientService.tokenTestPerformance();
     }
 
     @GetMapping("/apikey/auth/performance")
-    public String apiKeyTestPerformance() {
-        return "Hello World";
+    public ResponseEntity<String> apiKeyTestPerformance() {
+        return restClientService.apiKeyTestPerformance();
+    }
+
+    @GetMapping("/cert/auth/performance")
+    public ResponseEntity<String> certTestPerformance() {
+        return restClientService.certTestPerformance();
     }
 
     @PostMapping("/login")

@@ -76,6 +76,8 @@ services:
       - 9411:9411
     networks:
       - master-thesis-network
+    environment:
+      - JAVA_OPTS=-Xms2048m -Xmx4096m
   discovery-service:
     container_name: discovery-service
     image: discovery-service
